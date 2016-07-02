@@ -2,7 +2,7 @@
 An installer for disc image files (.img files) to flash media/storage devices (For Mac)
 
 ## Installation
-- Run `sh https://cdn.rawgit.com/pratinav/disc-image-installer/master/install`
+- Run `sh <(curl -s https://cdn.rawgit.com/pratinav/disc-image-installer/master/install)`
 - Voilà, Your install is done!
 
 ## Usage
