@@ -4,26 +4,33 @@ An installer for disc image files (.img files) to flash media/storage devices (F
 ## Installation
 - [Download](https://github.com/pratinav/disc-image-installer/archive/master.zip) and unzip the repository
 - Open the terminal and navigate to the repository folder
-- Execute  `sudo sh install.sh`, and enter your password when prompted to
-- Voila! Install completed.
+- Run `sh install.sh`
+- Voilà, Your install is done!
 
 *You may delete the downloaded folder once the install is complete*
 
 ## Usage
 The command for the disc image installer is `installimg`
 
-Usage:  `sudo installimg <disk> <path to image file`
+Usage:  `installimg <disk> <path to disc image file`
 
-Example:  `sudo installimg disk2 some-img-file.img`
+Example:  `installimg disk2 some-img-file.img`
+
+*You may be prompted to enter your password*
 
 There are two methods to find out the **disk** for your device-
 - From Disk Utility-
     - Insert the device into your computer.
     - Launch **Disk Utility**
+
     ![exmaple](http://i.imgur.com/4xg4WMq.jpg)
+
     - Select the disk and click on 'info'
+
     ![exmaple](http://i.imgur.com/rUSOccP.jpg)
+
     - Look for **BSD Device Node** in the information panel. That is your 'disk'.
+
     ![example](http://i.imgur.com/niObbg9.jpg)
 
 **OR**
@@ -33,9 +40,22 @@ There are two methods to find out the **disk** for your device-
     - Open terminal, and execute  `diskutil list`
     - Identify the disk corresponding to your device, example: `/dev/disk2`
     - If `/dev/disk2` is your device, your 'disk' is `disk2`
+
     ![exmaple](http://i.imgur.com/T1QbWAf.jpg)
 
 **Make sure your device is formatted properly**
+
+## Uninstallation
+To remove disc image installer from your system, simply run-
+```
+installimg --uninstall
+```
+
+## Contributing
+You can contribute to this project by-
+- Fixing any bugs or adding new features by sending in a [pull request](https://github.com/pratinav/disc-image-installer/pulls)
+- Filing an [issue](https://github.com/pratinav/disc-image-installer/issues) regarding a bug, a feature request or any other topic.
+
 
 ## License
 Copyright (c) 2016 Pratinav Bagla

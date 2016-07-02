@@ -1,0 +1,92 @@
+#!/usr/bin/env bash
+
+# Disc Image Installer for Mac v1.1.0
+# An installer for disc image files (.img files) to flash media/storage devices (For Mac)
+
+# Copyright (c) 2016 Pratinav Bagla (https://pratinav.xyz)
+# Released under the MIT License (https://github.com/pratinav/disc-image-installer/blob/master/LICENSE.txt)
+
+# Usage:  installimg <disk> <idisc mage file>
+# Example:  installimg disk2 some-disc-image.img
+# For more information-  https://github.com/pratinav/disc-image-installer
+
+if [[ $# -eq 0 || $1 = '--help' || $1 = '-h' ]]; then
+    echo 'Usage:  installimg <disk> <disc image file>'
+    exit 0
+fi
+
+if [[ $1 = '--uninstall' ]]; then
+
+    if ! rm /usr/local/bin/installimg; then
+        echo 'Uninstallation failed!' >&2
+        exit 1
+    fi
+
+    echo 'Uninstallation complete!'
+    exit 0
+
+fi
+
+if [[ $# -ne 2 ]]; then
+    echo 'Usage:  installimg <disk> <disc image file>' >&2
+    exit 1
+fi
+
+if ! [[ -e $1 ]]; then
+    echo 'Disk does not exist!' >&2
+    echo 'Usage:  installimg <disk> <disc image file>' >&2
+    exit 1
+fi
+
+if ! [[ -f $2 ]]; then
+    echo 'File does not exist!' >&2
+    echo 'Usage:  installimg <disk> <disc image file>' >&2
+    exit 1
+fi
+
+if ! [[ ${2: -4} == '.img' ]]; then
+    echo 'File is not a disc image (.img) file!' >&2
+    echo 'Usage:  installimg <disk> <disc image file>' >&2
+    exit 1
+fi
+
+echo 'Unmounting device'
+diskutil unmountDisk /dev/$1 || exit 1
+
+echo 'Beginning write'
+echo 'This may take a few minutes...'
+echo '(Press ^T to view progress)'
+
+# Attempt to write through raw disk node before disk node because raw disk is generally much faster
+echo 'Attempting to write through raw disk node'
+if ! sudo dd bs=1m if=$2 of=/dev/r$1; then
+
+    # Block size 1M for those with GNU Coreutils installed
+    echo 'Attempting to write through raw disk node with block size 1M'
+    if ! sudo dd bs=1M; if=$2 of=/dev/r$1; then
+
+        echo 'Attempting to write through disk node'
+        if ! sudo dd bs=1m if=$2 of=/dev/$1; then
+
+            echo 'Attempting to write through disk node with block size 1M'
+            if ! sudo dd bs=1M if=$2 of=/dev/$1; then
+
+                echo 'All write attempts failed!' >&2
+                exit 1
+
+            fi
+
+        fi
+
+    fi
+
+fi
+
+echo 'Image succesfully installed.'
+
+echo 'Ejecting device'
+diskutil eject /dev/$1 || exit 1
+
+echo 'It is now safe to remove your device'
+
+exit 0
