@@ -1,13 +1,10 @@
 #!/usr/bin/env bash
-# Usage:  sh install.sh
 
-wd="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-
-cp $wd/installimg /usr/local/bin \
-|| { echo 'File copying failed!\nInstallation aborted.' >&2; exit 1; }
+curl -o /usr/local/bin/installimg https://cdn.rawgit.com/pratinav/disc-image-installer/master/installimg \
+|| { echo 'File download failed! Installation aborted.' >&2; exit 1; }
 
 chmod +x /usr/local/bin/installimg \
-|| { echo 'Could not change file permissions!\nInstallation aborted.' >&2; exit 1; }
+|| { echo 'Could not change file permissions! Installation aborted.' >&2; exit 1; }
 
 echo 'Disc Image Installer has been installed succesfully.'
 echo 'To use the image installer, run:'

@@ -2,12 +2,8 @@
 An installer for disc image files (.img files) to flash media/storage devices (For Mac)
 
 ## Installation
-- [Download](https://github.com/pratinav/disc-image-installer/archive/master.zip) and unzip the repository
-- Open the terminal and navigate to the repository folder
-- Run `sh install.sh`
+- Run `sh https://cdn.rawgit.com/pratinav/disc-image-installer/master/install`
 - Voilà, Your install is done!
-
-*You may delete the downloaded folder once the install is complete*
 
 ## Usage
 The command for the disc image installer is `installimg`
