@@ -22,8 +22,8 @@ Example:  `installimg disk2 some-img-file.img`
 - `installimg --update` - Updates disc image installer to the latest available version
 - `installimg --uninstall` - Uninstalls disc image installer from your system
 
-There are two methods to find out the **disk** for your device-
-- From Disk Utility-
+There are two methods to find out the **disk** for your device, using Disk Utility-
+- From the GUI-
     - Insert the device into your computer.
     - Launch **Disk Utility**
 
