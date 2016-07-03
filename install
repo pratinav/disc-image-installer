@@ -1,10 +1,45 @@
 #!/usr/bin/env bash
 
-curl -o /usr/local/bin/installimg https://cdn.rawgit.com/pratinav/disc-image-installer/master/installimg \
-|| { echo 'File download failed! Installation aborted.' >&2; exit 1; }
+version='v1.1.1'
 
+if hash installimg 2>/dev/null; then
+    existing_version="$(installimg -v)"
+    if [[ $existing_version = $version ]]; then
+        echo "Disc Image Installer ${version} already installed."
+        exit 0
+    fi
+    echo "Disc Image Installer ${existing_version} detected, updating to ${version}"
+    echo "Uninstalling ${existing_version}..."
+    installimg --uninstall
+    echo "Installing ${version}..."
+fi
+
+echo 'Downloading binary...'
+curl -o /usr/local/bin/installimg https://cdn.rawgit.com/pratinav/disc-image-installer/master/installimg \
+|| { echo 'Binary download failed! Installation aborted.' >&2; exit 1; }
+
+echo 'Changing permissions...'
 chmod +x /usr/local/bin/installimg \
 || { echo 'Could not change file permissions! Installation aborted.' >&2; exit 1; }
+
+if hash pv 2>/dev/null; then
+    echo 'Pipe viewer already installed'
+else
+    echo 'Downloading pipe viewer...'
+    curl -O http://www.ivarch.com/programs/sources/pv-1.6.0.tar.gz
+    echo 'Download complete'
+    tar -xzf pv-1.6.0.tar.gz
+    cd pv-1.6.0
+    sh ./configure
+    make
+    make install \
+    || { echo 'Could not install pipe viewer, Installation aborted.' >&2; \
+        exit 1; }
+    echo 'Pipe viewer installed'
+    cd ..
+    rm pv-1.6.0.tar.gz
+    rm -rf pv-1.6.0
+fi
 
 echo 'Disc Image Installer has been installed succesfully.'
 echo 'To use the image installer, run:'

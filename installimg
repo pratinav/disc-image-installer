@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Disc Image Installer for Mac v1.1.0
+# Disc Image Installer for Mac v1.1.1
 # An installer for disc image files (.img files) to flash media/storage devices (For Mac)
 
 # Copyright (c) 2016 Pratinav Bagla (https://pratinav.xyz)
@@ -10,8 +10,25 @@
 # Example:  installimg disk2 some-disc-image.img
 # For more information-  https://github.com/pratinav/disc-image-installer
 
+version='v1.1.1'
+
 if [[ $# -eq 0 || $1 = '--help' || $1 = '-h' ]]; then
     echo 'Usage:  installimg <disk> <disc image file>'
+    echo 'Options-'
+    printf '    --help\t-h\tView usage and options\n'
+    printf '    --version\t-v\tDisplays version\n'
+    printf '    --update\t\tUpdates disc image installer\n'
+    printf '    --uninstall\t\tUninstalls disc image installer\n'
+    exit 0
+fi
+
+if [[ $1 = '--version' || $1 = '-v' ]]; then
+    echo $version
+    exit 0
+fi
+
+if [[ $1 = '--update' ]]; then
+    sh <(curl -s https://cdn.rawgit.com/pratinav/disc-image-installer/master/install)
     exit 0
 fi
 
@@ -22,31 +39,36 @@ if [[ $1 = '--uninstall' ]]; then
         exit 1
     fi
 
-    echo 'Uninstallation complete!'
+    echo 'Uninstalled Disc Image Installer ${version}'
     exit 0
 
 fi
 
 if [[ $# -ne 2 ]]; then
-    echo 'Usage:  installimg <disk> <disc image file>' >&2
+    echo 'Usage:  installimg <disk> <disc image file>'
+    echo 'Options-'
+    printf '    --help\t-h\tView usage and options\n'
+    printf '    --version\t-v\tDisplays version'
+    printf '    --update\t\tUpdates disc image installer'
+    printf '    --uninstall\t\tUninstalls disc image installer'
     exit 1
 fi
 
-if ! [[ -e $1 ]]; then
+if ! [[ -e /dev/$1 ]]; then
     echo 'Disk does not exist!' >&2
-    echo 'Usage:  installimg <disk> <disc image file>' >&2
+    echo 'Usage:  installimg <disk> <disc image file>'
     exit 1
 fi
 
 if ! [[ -f $2 ]]; then
     echo 'File does not exist!' >&2
-    echo 'Usage:  installimg <disk> <disc image file>' >&2
+    echo 'Usage:  installimg <disk> <disc image file>'
     exit 1
 fi
 
 if ! [[ ${2: -4} == '.img' ]]; then
     echo 'File is not a disc image (.img) file!' >&2
-    echo 'Usage:  installimg <disk> <disc image file>' >&2
+    echo 'Usage:  installimg <disk> <disc image file>'
     exit 1
 fi
 
@@ -54,22 +76,20 @@ echo 'Unmounting device'
 diskutil unmountDisk /dev/$1 || exit 1
 
 echo 'Beginning write'
-echo 'This may take a few minutes...'
-echo '(Press ^T to view progress)'
 
 # Attempt to write through raw disk node before disk node because raw disk is generally much faster
 echo 'Attempting to write through raw disk node'
-if ! sudo dd bs=1m if=$2 of=/dev/r$1; then
+if ! pv $2 | sudo dd bs=1m of=/dev/r$1; then
 
     # Block size 1M for those with GNU Coreutils installed
     echo 'Attempting to write through raw disk node with block size 1M'
-    if ! sudo dd bs=1M; if=$2 of=/dev/r$1; then
+    if ! pv $2 | sudo dd bs=1M of=/dev/r$1; then
 
         echo 'Attempting to write through disk node'
-        if ! sudo dd bs=1m if=$2 of=/dev/$1; then
+        if ! pv $2 | sudo dd bs=1m of=/dev/$1; then
 
             echo 'Attempting to write through disk node with block size 1M'
-            if ! sudo dd bs=1M if=$2 of=/dev/$1; then
+            if ! pv $2 | sudo dd bs=1M of=/dev/$1; then
 
                 echo 'All write attempts failed!' >&2
                 exit 1

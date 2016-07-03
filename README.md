@@ -1,6 +1,8 @@
 # Disc Image Installer for Mac
 An installer for disc image files (.img files) to flash media/storage devices (For Mac)
 
+![showcase](http://i.imgur.com/Zm5Ltxa.jpg)
+
 ## Installation
 - Run `sh <(curl -s https://cdn.rawgit.com/pratinav/disc-image-installer/master/install)`
 - Voilà, Your install is done!
@@ -13,6 +15,12 @@ Usage:  `installimg <disk> <path to disc image file`
 Example:  `installimg disk2 some-img-file.img`
 
 *You may be prompted to enter your password*
+
+**Options-**
+- `installimg --help` or `installimg -h` - Displays usage
+- `installimg --version` or `installimg -v` - Displays the installed version, of disc image installer, on your system
+- `installimg --update` - Updates disc image installer to the latest available version
+- `installimg --uninstall` - Uninstalls disc image installer from your system
 
 There are two methods to find out the **disk** for your device-
 - From Disk Utility-
@@ -41,6 +49,12 @@ There are two methods to find out the **disk** for your device-
 
 **Make sure your device is formatted properly**
 
+## Update
+To update disc image installer, run-
+```
+installimg --update
+```
+
 ## Uninstallation
 To remove disc image installer from your system, simply run-
 ```
@@ -52,6 +66,8 @@ You can contribute to this project by-
 - Fixing any bugs or adding new features by sending in a [pull request](https://github.com/pratinav/disc-image-installer/pulls)
 - Filing an [issue](https://github.com/pratinav/disc-image-installer/issues) regarding a bug, a feature request or any other topic.
 
+## Dependencies
+- [Pipe Viewer](http://www.ivarch.com/programs/pv.shtml)- 1.6.0
 
 ## License
 Copyright (c) 2016 Pratinav Bagla
