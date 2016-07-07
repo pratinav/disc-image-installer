@@ -10,66 +10,66 @@
 # Example:  installimg disk2 some-disc-image.img
 # For more information-  https://github.com/pratinav/disc-image-installer
 
-version='v1.1.1'
+version='v1.1.2'
 
 if [[ $# -eq 0 || $1 = '--help' || $1 = '-h' ]]; then
-    echo 'Usage:  installimg <disk> <disc image file>'
-    echo 'Options-'
-    printf '    --help\t-h\tView usage and options\n'
-    printf '    --version\t-v\tDisplays version\n'
-    printf '    --update\t\tUpdates disc image installer\n'
-    printf '    --uninstall\t\tUninstalls disc image installer\n'
-    exit 0
+  echo 'Usage:  installimg <disk> <disc image file>'
+  echo 'Options-'
+  printf '  --help\t-h\tView usage and options\n'
+  printf '  --version\t-v\tDisplays version\n'
+  printf '  --update\t\tUpdates disc image installer\n'
+  printf '  --uninstall\t\tUninstalls disc image installer\n'
+  exit 0
 fi
 
 if [[ $1 = '--version' || $1 = '-v' ]]; then
-    echo $version
-    exit 0
+  echo $version
+  exit 0
 fi
 
 if [[ $1 = '--update' ]]; then
-    sh <(curl -s https://cdn.rawgit.com/pratinav/disc-image-installer/master/install)
-    exit 0
+  sh <(curl -s https://cdn.rawgit.com/pratinav/disc-image-installer/master/install)
+  exit 0
 fi
 
 if [[ $1 = '--uninstall' ]]; then
 
-    if ! rm /usr/local/bin/installimg; then
-        echo 'Uninstallation failed!' >&2
-        exit 1
-    fi
+  if ! rm /usr/local/bin/installimg; then
+    echo 'Uninstallation failed!' >&2
+    exit 1
+  fi
 
-    echo 'Uninstalled Disc Image Installer ${version}'
-    exit 0
+  echo 'Uninstalled Disc Image Installer ${version}'
+  exit 0
 
 fi
 
 if [[ $# -ne 2 ]]; then
-    echo 'Usage:  installimg <disk> <disc image file>'
-    echo 'Options-'
-    printf '    --help\t-h\tView usage and options\n'
-    printf '    --version\t-v\tDisplays version'
-    printf '    --update\t\tUpdates disc image installer'
-    printf '    --uninstall\t\tUninstalls disc image installer'
-    exit 1
+  echo 'Usage:  installimg <disk> <disc image file>'
+  echo 'Options-'
+  printf '  --help\t-h\tView usage and options\n'
+  printf '  --version\t-v\tDisplays version'
+  printf '  --update\t\tUpdates disc image installer'
+  printf '  --uninstall\t\tUninstalls disc image installer'
+  exit 1
 fi
 
 if ! [[ -e /dev/$1 ]]; then
-    echo 'Disk does not exist!' >&2
-    echo 'Usage:  installimg <disk> <disc image file>'
-    exit 1
+  echo 'Disk does not exist!' >&2
+  echo 'Usage:  installimg <disk> <disc image file>'
+  exit 1
 fi
 
 if ! [[ -f $2 ]]; then
-    echo 'File does not exist!' >&2
-    echo 'Usage:  installimg <disk> <disc image file>'
-    exit 1
+  echo 'File does not exist!' >&2
+  echo 'Usage:  installimg <disk> <disc image file>'
+  exit 1
 fi
 
 if ! [[ ${2: -4} == '.img' ]]; then
-    echo 'File is not a disc image (.img) file!' >&2
-    echo 'Usage:  installimg <disk> <disc image file>'
-    exit 1
+  echo 'File is not a disc image (.img) file!' >&2
+  echo 'Usage:  installimg <disk> <disc image file>'
+  exit 1
 fi
 
 echo 'Unmounting device'
@@ -81,24 +81,24 @@ echo 'Beginning write'
 echo 'Attempting to write through raw disk node'
 if ! pv $2 | sudo dd bs=1m of=/dev/r$1; then
 
-    # Block size 1M for those with GNU Coreutils installed
-    echo 'Attempting to write through raw disk node with block size 1M'
-    if ! pv $2 | sudo dd bs=1M of=/dev/r$1; then
+  # Block size 1M for those with GNU Coreutils installed
+  echo 'Attempting to write through raw disk node with block size 1M'
+  if ! pv $2 | sudo dd bs=1M of=/dev/r$1; then
 
-        echo 'Attempting to write through disk node'
-        if ! pv $2 | sudo dd bs=1m of=/dev/$1; then
+    echo 'Attempting to write through disk node'
+    if ! pv $2 | sudo dd bs=1m of=/dev/$1; then
 
-            echo 'Attempting to write through disk node with block size 1M'
-            if ! pv $2 | sudo dd bs=1M of=/dev/$1; then
+      echo 'Attempting to write through disk node with block size 1M'
+      if ! pv $2 | sudo dd bs=1M of=/dev/$1; then
 
-                echo 'All write attempts failed!' >&2
-                exit 1
+        echo 'All write attempts failed!' >&2
+        exit 1
 
-            fi
-
-        fi
+      fi
 
     fi
+
+  fi
 
 fi
 
